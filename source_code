@@ -1,0 +1,43 @@
+const int sensorPin = A0;
+const int relayPin = 7;
+
+int sensorValue = 0;
+int lastValue = -1;
+bool pumpState = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH);
+}
+
+void loop() {
+
+  sensorValue = analogRead(sensorPin);
+
+  if(abs(sensorValue - lastValue) > 10)
+  {
+    Serial.print("Soil Value: ");
+    Serial.println(sensorValue);
+    lastValue = sensorValue;
+  }
+
+  if(sensorValue > 600)
+  {
+    if(pumpState == false) {
+      digitalWrite(relayPin, LOW);
+      Serial.println("Pump ON");
+      pumpState = true;
+    }
+  }
+  else
+  {
+    if(pumpState == true) {
+      digitalWrite(relayPin, HIGH);
+      Serial.println("Pump OFF");
+      pumpState = false;
+    }
+  }
+
+  delay(1000);
+}
